@@ -1,13 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using NFCMoneyTransferAPI.Entity;
 
-namespace NFCMoneyTransferAPI.Data
+namespace NFCMoneyTransferAPI.DbContext
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : Microsoft.EntityFrameworkCore.DbContext
     {
-        public DbSet<User> Users { get; set; }
-        public DbSet<Account> Accounts { get; set; }
-        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<User> Users { get; set; } = null!;
+        public DbSet<Account> Accounts { get; set; } = null!;
+        public DbSet<Transaction> Transactions { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -15,18 +15,18 @@ namespace NFCMoneyTransferAPI.Data
                 .HasOne(t => t.FromAccount)
                 .WithMany(a => a.Transactions)
                 .HasForeignKey(t => t.FromAccountID)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(Microsoft.EntityFrameworkCore.DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Transaction>()
                 .HasOne(t => t.ToAccount)
                 .WithMany()
                 .HasForeignKey(t => t.ToAccountID)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(Microsoft.EntityFrameworkCore.DeleteBehavior.Restrict);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("YourConnectionStringHere");
+            optionsBuilder.UseSqlServer("data source=DESKTOP-E79JTP3;initial catalog=NFCTransfer;trusted_connection=true; TrustServerCertificate=True");
         }
     }
 }
