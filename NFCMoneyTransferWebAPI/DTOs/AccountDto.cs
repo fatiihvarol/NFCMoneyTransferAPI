@@ -6,3 +6,9 @@ public class AccountDto
     public decimal Balance { get; set; }
     public int UserID { get; set; }
 }
+
+public class CreateAccountDto
+{
+    public decimal Balance { get; set; }
+    public int UserID { get; set; }
+}
