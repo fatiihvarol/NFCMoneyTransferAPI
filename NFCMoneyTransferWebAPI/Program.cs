@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using NFCMoneyTransferAPI.Services.AccountService;
 using NFCMoneyTransferAPI.DbContext;
-using NFCMoneyTransferWebAPI.Services.AccountService;
+using NFCMoneyTransferAPI.Services.TransactionService;
+using NFCMoneyTransferWebAPI.Services.UserService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<IUserService, UserService>();
+
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 

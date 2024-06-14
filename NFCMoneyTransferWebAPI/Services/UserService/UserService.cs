@@ -1,14 +1,7 @@
-
-using Microsoft.IdentityModel.Tokens;
-
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NFCMoneyTransferAPI.DbContext;
 using NFCMoneyTransferAPI.DTOs;
-using NFCMoneyTransferAPI.Entity;
+
 
 namespace NFCMoneyTransferWebAPI.Services.UserService
 {
@@ -31,15 +24,11 @@ namespace NFCMoneyTransferWebAPI.Services.UserService
                 throw new ArgumentException("Invalid username or password");
             }
 
-            var userID = user.UserID;
             return new LoginResponseDto
             {
                 UserName = user.UserName,
-                UserID=userID
+                UserID = user.UserID
             };
         }
-
-      
-        
     }
 }

@@ -3,7 +3,6 @@ using NFCMoneyTransferAPI.DTOs;
 using NFCMoneyTransferAPI.Services.AccountService;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using NFCMoneyTransferWebAPI.Services.AccountService;
 
 namespace NFCMoneyTransferAPI.Controllers
 {
@@ -18,12 +17,7 @@ namespace NFCMoneyTransferAPI.Controllers
             _accountService = accountService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddAccount([FromBody] CreateAccountDto createAccountDto)
-        {
-            var account = await _accountService.AddAccountAsync(createAccountDto);
-            return CreatedAtAction(nameof(GetAccountById), new { accountId = account.AccountID }, account);
-        }
+      
 
         [HttpGet("{accountId}")]
         public async Task<IActionResult> GetAccountById(int accountId)
@@ -34,6 +28,13 @@ namespace NFCMoneyTransferAPI.Controllers
             return Ok(account);
         }
 
+        [HttpGet("User/{userId}")]
+        public async Task<IActionResult> GetAccountsByUserId(int userId)
+        {
+            var accounts = await _accountService.GetAccountsByUserIdAsync(userId);
+            return Ok(accounts);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAllAccounts()
         {
@@ -41,11 +42,6 @@ namespace NFCMoneyTransferAPI.Controllers
             return Ok(accounts);
         }
 
-        [HttpDelete("{accountId}")]
-        public async Task<IActionResult> DeleteAccount(int accountId)
-        {
-            await _accountService.DeleteAccountAsync(accountId);
-            return NoContent();
-        }
+       
     }
 }

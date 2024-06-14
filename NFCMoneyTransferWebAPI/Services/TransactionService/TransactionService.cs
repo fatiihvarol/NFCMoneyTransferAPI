@@ -4,6 +4,7 @@ using NFCMoneyTransferAPI.DbContext;
 using NFCMoneyTransferAPI.DTOs;
 using NFCMoneyTransferAPI.Entity;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NFCMoneyTransferAPI.Services.TransactionService
@@ -17,14 +18,14 @@ namespace NFCMoneyTransferAPI.Services.TransactionService
             _context = context;
         }
 
-        public async Task<TransactionDto> TransferFundsAsync(int fromAccountId, int toAccountId, decimal amount)
+        public async Task<TransactionDto> TransferFundsAsync(string fromIBAN, string receiverIBAN, decimal amount)
         {
             using (IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    var fromAccount = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountID == fromAccountId);
-                    var toAccount = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountID == toAccountId);
+                    var fromAccount = await _context.Accounts.FirstOrDefaultAsync(a => a.IBAN == fromIBAN);
+                    var toAccount = await _context.Accounts.FirstOrDefaultAsync(a => a.IBAN == receiverIBAN);
 
                     if (fromAccount == null || toAccount == null)
                     {
@@ -43,9 +44,9 @@ namespace NFCMoneyTransferAPI.Services.TransactionService
                     {
                         Amount = amount,
                         Date = DateTime.UtcNow,
-                        FromAccountID = fromAccountId,
+                        FromAccountID = fromAccount.AccountID,
                         FromAccount = fromAccount,
-                        ToAccountID = toAccountId,
+                        ToAccountID = toAccount.AccountID,
                         ToAccount = toAccount
                     };
 
@@ -60,7 +61,9 @@ namespace NFCMoneyTransferAPI.Services.TransactionService
                         Amount = transactionRecord.Amount,
                         Date = transactionRecord.Date,
                         FromAccountID = transactionRecord.FromAccountID,
-                        ToAccountID = transactionRecord.ToAccountID
+                        SenderIban = fromAccount.IBAN,
+                        ToAccountID = transactionRecord.ToAccountID,
+                        ReceiverIban = toAccount.IBAN
                     };
                 }
                 catch
@@ -85,7 +88,9 @@ namespace NFCMoneyTransferAPI.Services.TransactionService
                 Amount = t.Amount,
                 Date = t.Date,
                 FromAccountID = t.FromAccountID,
-                ToAccountID = t.ToAccountID
+                SenderIban = t.FromAccount.IBAN,
+                ToAccountID = t.ToAccountID,
+                ReceiverIban = t.ToAccount.IBAN
             }).ToList();
         }
     }

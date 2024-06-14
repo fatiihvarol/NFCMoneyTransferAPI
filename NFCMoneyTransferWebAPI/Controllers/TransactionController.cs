@@ -56,8 +56,9 @@ namespace NFCMoneyTransferAPI.Controllers
 
     public class TransferRequestDto
     {
-        public int SenderIban { get; set; }
-        public int ReceiverIban { get; set; }
+        public string SenderIban { get; set; }
+        public string ReceiverIban { get; set; }
         public decimal Amount { get; set; }
     }
+
 }

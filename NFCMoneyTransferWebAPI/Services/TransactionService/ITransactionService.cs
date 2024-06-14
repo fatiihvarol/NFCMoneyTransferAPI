@@ -6,7 +6,7 @@ namespace NFCMoneyTransferAPI.Services.TransactionService
 {
     public interface ITransactionService
     {
-        Task<TransactionDto> TransferFundsAsync(int fromAccountId, int toAccountId, decimal amount);
+        Task<TransactionDto> TransferFundsAsync(string fromAccountId, string toAccountId, decimal amount);
         Task<List<TransactionDto>> GetTransactionsByUserIdAsync(int userId);
     }
 }

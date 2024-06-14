@@ -1,20 +1,34 @@
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using NFCMoneyTransferAPI.DbContext;
 using NFCMoneyTransferAPI.DTOs;
 using NFCMoneyTransferAPI.Entity;
-using NFCMoneyTransferWebAPI.Services.AccountService;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace NFCMoneyTransferAPI.Services.AccountService
 {
     public class AccountService : IAccountService
     {
         private readonly AppDbContext _context;
+        private static readonly Random _random = new Random();
 
         public AccountService(AppDbContext context)
         {
             _context = context;
+        }
+
+        private string GenerateRandomNumber()
+        {
+            const int numberLength = 11;
+            const string digits = "0123456789";
+
+            var randomDigits = new string(Enumerable.Repeat(digits, numberLength)
+                .Select(s => s[_random.Next(s.Length)]).ToArray());
+
+            return randomDigits;
         }
 
         public async Task<AccountDto> AddAccountAsync(CreateAccountDto createAccountDto)
@@ -26,7 +40,8 @@ namespace NFCMoneyTransferAPI.Services.AccountService
                     var account = new Account
                     {
                         Balance = createAccountDto.Balance,
-                        UserID = createAccountDto.UserID
+                        UserID = createAccountDto.UserID,
+                        IBAN = GenerateRandomNumber()
                     };
 
                     _context.Accounts.Add(account);
@@ -38,7 +53,8 @@ namespace NFCMoneyTransferAPI.Services.AccountService
                     {
                         AccountID = account.AccountID,
                         Balance = account.Balance,
-                        UserID = account.UserID
+                        UserID = account.UserID,
+                        IBAN = account.IBAN
                     };
                 }
                 catch
@@ -49,9 +65,21 @@ namespace NFCMoneyTransferAPI.Services.AccountService
             }
         }
 
-        public Task<IEnumerable<AccountDto>> GetAccountByIdAsync(int accountId)
+        public async Task<IEnumerable<AccountDto>> GetAccountByIdAsync(int accountId)
         {
-            throw new NotImplementedException();
+            var account = await _context.Accounts.FindAsync(accountId);
+            if (account == null) return Enumerable.Empty<AccountDto>();
+
+            return new List<AccountDto>
+            {
+                new AccountDto
+                {
+                    AccountID = account.AccountID,
+                    Balance = account.Balance,
+                    UserID = account.UserID,
+                    IBAN = account.IBAN
+                }
+            };
         }
 
         public async Task<IEnumerable<AccountDto>> GetAccountsByUserIdAsync(int userId)
@@ -63,7 +91,8 @@ namespace NFCMoneyTransferAPI.Services.AccountService
             {
                 AccountID = account.AccountID,
                 Balance = account.Balance,
-                UserID = account.UserID
+                UserID = account.UserID,
+                IBAN = account.IBAN
             }).ToList();
         }
 
@@ -78,7 +107,8 @@ namespace NFCMoneyTransferAPI.Services.AccountService
                 {
                     AccountID = account.AccountID,
                     Balance = account.Balance,
-                    UserID = account.UserID
+                    UserID = account.UserID,
+                    IBAN = account.IBAN
                 });
             }
 

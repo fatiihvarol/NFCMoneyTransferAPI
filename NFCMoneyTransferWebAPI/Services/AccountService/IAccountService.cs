@@ -1,13 +1,15 @@
 using NFCMoneyTransferAPI.DTOs;
-using NFCMoneyTransferAPI.Entity;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace NFCMoneyTransferWebAPI.Services.AccountService;
-
-
-public interface IAccountService
+namespace NFCMoneyTransferAPI.Services.AccountService
 {
-    Task<AccountDto> AddAccountAsync(CreateAccountDto createAccountDto);
-    Task<IEnumerable<AccountDto>>GetAccountByIdAsync(int accountId);
-    Task<IEnumerable<AccountDto>> GetAllAccountsAsync();
-    Task DeleteAccountAsync(int accountId);
+    public interface IAccountService
+    {
+        Task<AccountDto> AddAccountAsync(CreateAccountDto createAccountDto);
+        Task<IEnumerable<AccountDto>> GetAccountByIdAsync(int accountId);
+        Task<IEnumerable<AccountDto>> GetAccountsByUserIdAsync(int userId);
+        Task<IEnumerable<AccountDto>> GetAllAccountsAsync();
+        Task DeleteAccountAsync(int accountId);
+    }
 }
