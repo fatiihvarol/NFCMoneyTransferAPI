@@ -25,10 +25,10 @@ namespace NFCMoneyTransferAPI.Controllers
             return CreatedAtAction(nameof(GetAccountById), new { accountId = account.AccountID }, account);
         }
 
-        [HttpGet("{userId}")]
-        public async Task<IActionResult> GetAccountById(int userId)
+        [HttpGet("{accountId}")]
+        public async Task<IActionResult> GetAccountById(int accountId)
         {
-            var account = await _accountService.GetAccountByIdAsync(userId);
+            var account = await _accountService.GetAccountByIdAsync(accountId);
             if (account == null) return NotFound();
 
             return Ok(account);
