@@ -31,30 +31,15 @@ namespace NFCMoneyTransferWebAPI.Services.UserService
                 throw new ArgumentException("Invalid username or password");
             }
 
-            var token = GenerateJwtToken(user);
+            var userID = user.UserID;
             return new LoginResponseDto
             {
                 UserName = user.UserName,
-                Token = token
+                UserID=userID
             };
         }
 
-        private string GenerateJwtToken(User user)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString())
-                }),
-                Expires = DateTime.UtcNow.AddHours(1),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
-        }
+      
+        
     }
 }

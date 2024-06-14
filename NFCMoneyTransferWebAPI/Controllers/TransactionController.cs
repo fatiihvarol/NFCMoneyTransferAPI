@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-
 using NFCMoneyTransferAPI.Services.TransactionService;
+using NFCMoneyTransferAPI.DTOs;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace NFCMoneyTransferAPI.Controllers
 {
@@ -20,7 +22,7 @@ namespace NFCMoneyTransferAPI.Controllers
         {
             try
             {
-                var transaction = await _transactionService.TransferFundsAsync(request.FromAccountID, request.ToAccountID, request.Amount);
+                var transaction = await _transactionService.TransferFundsAsync(request.SenderIban, request.ReceiverIban, request.Amount);
                 return Ok(transaction);
             }
             catch (ArgumentException ex)
@@ -36,12 +38,26 @@ namespace NFCMoneyTransferAPI.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpGet("UserTransactions/{userId}")]
+        public async Task<IActionResult> GetTransactionsByUserId(int userId)
+        {
+            try
+            {
+                var transactions = await _transactionService.GetTransactionsByUserIdAsync(userId);
+                return Ok(transactions);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 
     public class TransferRequestDto
     {
-        public int FromAccountID { get; set; }
-        public int ToAccountID { get; set; }
+        public int SenderIban { get; set; }
+        public int ReceiverIban { get; set; }
         public decimal Amount { get; set; }
     }
 }

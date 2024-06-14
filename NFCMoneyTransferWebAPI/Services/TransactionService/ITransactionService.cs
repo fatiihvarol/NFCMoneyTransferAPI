@@ -1,10 +1,12 @@
 using NFCMoneyTransferAPI.DTOs;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace NFCMoneyTransferAPI.Services.TransactionService;
-
-
+namespace NFCMoneyTransferAPI.Services.TransactionService
+{
     public interface ITransactionService
     {
         Task<TransactionDto> TransferFundsAsync(int fromAccountId, int toAccountId, decimal amount);
+        Task<List<TransactionDto>> GetTransactionsByUserIdAsync(int userId);
     }
-
+}

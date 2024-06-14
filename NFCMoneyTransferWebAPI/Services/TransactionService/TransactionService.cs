@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Storage;
 using NFCMoneyTransferAPI.DbContext;
 using NFCMoneyTransferAPI.DTOs;
 using NFCMoneyTransferAPI.Entity;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace NFCMoneyTransferAPI.Services.TransactionService
 {
@@ -67,6 +69,24 @@ namespace NFCMoneyTransferAPI.Services.TransactionService
                     throw;
                 }
             }
+        }
+
+        public async Task<List<TransactionDto>> GetTransactionsByUserIdAsync(int userId)
+        {
+            var transactions = await _context.Transactions
+                .Include(t => t.FromAccount)
+                .Include(t => t.ToAccount)
+                .Where(t => t.FromAccount.UserID == userId || t.ToAccount.UserID == userId)
+                .ToListAsync();
+
+            return transactions.Select(t => new TransactionDto
+            {
+                TransactionID = t.TransactionID,
+                Amount = t.Amount,
+                Date = t.Date,
+                FromAccountID = t.FromAccountID,
+                ToAccountID = t.ToAccountID
+            }).ToList();
         }
     }
 }
